@@ -16,6 +16,7 @@ int main (int argc, char* argv[])
 	struct hostent* server;
 	char manda[1000];
 
+	//inizializzo socket tramite argv, controllo errore successivo
 	portno = atoi(argv[1]);
 	sockfd = (AF_INET, SOCK_DGRAM, 0);
 
@@ -23,7 +24,7 @@ int main (int argc, char* argv[])
 	{
 		printf("ERROR opening socket");
 	}
-
+	//inizializzo server con controllo successivo
 	server = gethostbyname(argv[2]);
 
 	if (server == NULL)
@@ -31,11 +32,13 @@ int main (int argc, char* argv[])
 		printf("ERROR non such host");
 	}
 
+	//azzero i valori chiave per evitare problemi
 	bzero((char*) &a_server, sizeof (a_server));
 	a_server.sin_family = AF_INET;
 	bcopy((char*)server->h_addr, (char*)&a_server.sin_addr.s_addr, server->h_length);
 	a_server.sin_port = htons(portno);
 
+	//ciclo invio dati
 	while (fgets(manda, 1000, stdin))
 	{
 		sendto(sockfd,manda, 10, 0, (struct sockaddr*)&a_server, sizeof(a_server));
